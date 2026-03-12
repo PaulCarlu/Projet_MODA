@@ -7,8 +7,8 @@ function sol = WFEM(K,M,freqrange,uL,uR,ui,dx)
 % the wavenumbers of a few mainly propagating solution (for easy plot of
 % the dispersion curves)
 
-for i=1:length(freqrange)  % frfr=nbfreq
-
+for i=2:length(freqrange)  % frfr=nbfreq
+    % On commence à 2 car si trop proche de 0, une erreur survient
     om=sparse(2*pi*freqrange(i));
     D=K - om^2*M;
 
@@ -23,7 +23,7 @@ for i=1:length(freqrange)  % frfr=nbfreq
 
 
     %% Dispersion relation resolution
-    [PHI,Lambdas] = solve_palindrome(DRL,DLL+DRR,DLR);
+    [PHI,Lambdas] = solve_palindrome_2(DRL,DLL+DRR,DLR);
     % 'solve_palindrome' solves the quadratic eigenvalue problem (EVP):
     % [A0*1/lambda + A1 + A2*lambda] PHI = 0
     % It takes square matrices A of dimension n, and uses a linearization
@@ -43,6 +43,7 @@ for i=1:length(freqrange)  % frfr=nbfreq
     % Third, it normalizes each vector phi to the unity.
     % lbpos and lbneg are vectors of length n
     % phipos, phineg are matrices of size n x n.
+
 
     %% Test the palindomic nature of the solutions:
     % test=abs([lbpos 1./lbneg]); % propagation constants (should be =)
