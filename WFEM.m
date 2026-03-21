@@ -7,7 +7,7 @@ function sol = WFEM(K,M,freqrange,uL,uR,ui,dx)
 % the wavenumbers of a few mainly propagating solution (for easy plot of
 % the dispersion curves)
 
-for i=2:length(freqrange)  % frfr=nbfreq
+for i=1:length(freqrange)  % frfr=nbfreq
     % On commence à 2 car si trop proche de 0, une erreur survient
     om=sparse(2*pi*freqrange(i));
     D=K - om^2*M;
@@ -27,7 +27,7 @@ for i=2:length(freqrange)  % frfr=nbfreq
     % 'solve_palindrome' solves the quadratic eigenvalue problem (EVP):
     % [A0*1/lambda + A1 + A2*lambda] PHI = 0
     % It takes square matrices A of dimension n, and uses a linearization
-    % of the EVP to retrieve [PHI,Lambdas], 
+    % of the EVP to retrieve [PHI,Lambdas],
     % where PHI=[phi_1, ..., phi_2n] is of size n x 2*n, and
     % where Lambdas is a vector of size 2*n
 
@@ -35,9 +35,9 @@ for i=2:length(freqrange)  % frfr=nbfreq
     %% Sorting and normalizing the wave basis
     [lbpos, lbneg, phipos, phineg] = wavesorting(Lambdas,PHI);
     % function 'wavesorting' collects the PHI and Lambdas variables as defined
-    % produced by solve_palindrome, and does three operations: 
+    % produced by solve_palindrome, and does three operations:
     % First, it separates the positive-going and negative-going propagation
-    % constants and vectors (associated with abs(lambda)< or > 1). 
+    % constants and vectors (associated with abs(lambda)< or > 1).
     % Second, it sorts the two sets (+ and - waves) in a similar way, i.e.,
     % from the most propagating to the most evanescent waves.
     % Third, it normalizes each vector phi to the unity.
