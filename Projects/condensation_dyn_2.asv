@@ -1,3 +1,4 @@
+
 %% Dynamic condensation
 
 function [DLL, DLR, DRL, DRR,vL, vR] = condensation_dyn_2(D, uL, ui, uR)
@@ -18,13 +19,14 @@ D=full(D);
 DLL=D(uL,uL);
 DLi = D(uL,ui);
 %DLR = D(uL,uR);
-DiL = D(ui,uL);
 Dii = D(ui,ui);
 DiR = D(ui,uR);
+size(DiR)
 %DRL=D(uR,uL);
 DRi=D(uR,ui);
 DRR=D(uR,uR);
-
+length(uL)
+length(uR)
 % Sous matrices élémentaires de D condensée
 InvDii = inv(Dii);
 DLL = DLL-DLi*InvDii*DiL;
@@ -32,11 +34,9 @@ DRR = DRR-DRi*InvDii*DiR;
 DLR = -DLi*InvDii*DiR;
 DRL = -DRi*InvDii*DiL;
 
-% Nouvelles variables
+
 vL = 1:m;
 vR = (m+1):(2*m);
-
-
 
 
 

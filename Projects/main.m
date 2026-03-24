@@ -1,6 +1,6 @@
 
 %% Loading a pre-existing unit-cell model :
-clear; clc
+clear; clc; close all
 
 %load UC_model2D_2x2.mat
 
@@ -80,7 +80,8 @@ for i=1:nf
     D = K - om^2*M;
 
     % Dynamic condensation (see details in WFEM_MODA function)
-    [DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn(D, uL, ui, uR);
+    %[DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn(D, uL, ui, uR);
+    [DLL, DLR, DRL, DRR,vL, vR] = condensation_dyn_2(D, uL, ui, uR);
 
     % Defining wave matrices for each frequency
     phi_p = wavebasis.phipos(:,:,i);

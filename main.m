@@ -60,7 +60,7 @@ wavebasis = WFEM(K,M,freqrange,uL,uR,ui,d);
 plot(freqrange,wavebasis.k_pos,'k.') % ploting the results Re(k)
 
 %figure
-%plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results Re(k)
+plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results Re(k)
 
 %% Forced response
 m=length(uL)
@@ -82,6 +82,7 @@ for i=1:nf
 
     % Dynamic condensation (see details in WFEM_MODA function)
     [DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn(D, uL, ui, uR);
+    %[DLL, DLR, DRL, DRR,vL, vR] = condensation_dyn_2(D, uL, ui, uR);
 
     % Defining wave matrices for each frequency
     phi_p = wavebasis.phipos(:,:,i);

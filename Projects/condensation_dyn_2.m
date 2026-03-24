@@ -1,3 +1,4 @@
+
 %% Dynamic condensation
 
 function [DLL, DLR, DRL, DRR,vL, vR] = condensation_dyn_2(D, uL, ui, uR)
@@ -35,8 +36,6 @@ DRL = -DRi*InvDii*DiL;
 % Nouvelles variables
 vL = 1:m;
 vR = (m+1):(2*m);
-
-
 
 
 
