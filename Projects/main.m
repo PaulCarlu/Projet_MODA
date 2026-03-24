@@ -2,11 +2,11 @@
 %% Loading a pre-existing unit-cell model :
 clear; clc
 
-load UC_model2D_2x2.mat
+%load UC_model2D_2x2.mat
 
-%load UC_model2D_10x10.mat
+load UC_model2D_10x10.mat
 
-freqrange = linspace(5,50000,300); % Given frequency range for these two models
+freqrange = linspace(1,50000,300); % Given frequency range for these two models
 
 
 %% Parametrization of the unit-cell
@@ -17,7 +17,6 @@ lx=0.1; % Unit-cell length
 ly=0.1; % Unit-cell height
 r=0.035; % Inclusion's radius
 geom=struct('lx',lx,'ly',ly,'r',r);
-geom
 
 % Material parameters
 E=210e9; % Young modulus
@@ -45,9 +44,9 @@ visualize_mode(model.mesh,phi,'animate', true)
 
 %% Extract simplified variables and compute waves
 
-K=model.K;
+K=model.K; 
 M=model.M;
-uL=model.dofs.uL;
+uL=model.dofs.uL; 
 ui=model.dofs.ui;
 uR=model.dofs.uR;
 d=model.geom.lx;
@@ -63,7 +62,7 @@ plot(freqrange,wavebasis.k_pos,'k.') % ploting the results Re(k)
 %plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results Re(k)
 
 %% Forced response
-m=length(uL)
+m=length(uL);
 
 N=20; % Number of unit-cells in the finite structure
 U = zeros(m,N+1,nf);
@@ -93,7 +92,7 @@ for i=1:nf
     % Compute the wave amplitudes for the selected boundary conditions
     [qp, qn] = wave_Amplitudes(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type);
 % Function [qp, qn]=wave_Amplitudes(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type)
-% Determines, for each 'type' of boundary conditions, ex. type='U-U' or 'U-F', 'F-U', 'F-F',
+% Determines, for each 'type' of boundary conditions, ex. type='U-U' or 'U-F', 'F-U', 'F-F', 
 % the wave amplitudes q+, q-, solutions of the problem H*[q+ ; q-] = BC,
 % where BC is the imposed boundary conditions vector. BC can be of the form
 % [U0 ; UN], [U0 ; FN],  [F0 ; UN] or [F0 ; FN], depending on what is imposed.
@@ -109,7 +108,7 @@ for i=1:nf
 % to return the physical displacements using the Bloch wave decomposition
 % method. One has to be careful of the positions n=0 and n=N, since the
 % matrix powers operations may result in M^0 matrices.
-% The resulting u_vector is in fact a matrix: u(DOF_index, n_index), where
+% The resulting u_vector is in fact a matrix: u(DOF_index, n_index), where 
 % DOF_index is the DOF number on the UC edge (uL), while n_index is the
 % unit-cell position from 0 (i.e., left of the 1st UC) to N (right of the
 % last UC).
