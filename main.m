@@ -27,7 +27,7 @@ rho=7800; % Material density
 t=0.1; % Plate width
 mater=struct('E',E,'nu',nu,'rho',rho,'eta',eta,'t',t);
 
-plotopt=1; % Option to visualize unit-cell
+plotopt=0; % Option to visualize unit-cell
 
 model = generate_model(geom,mater,plotopt);
 
@@ -57,10 +57,10 @@ nf=length(freqrange);
 % Computing waves from dispersion relation
 wavebasis = WFEM(K,M,freqrange,uL,uR,ui,d);
 
-figure(1)
+figure(2)
 plot(freqrange,wavebasis.k_pos,'k.') % ploting the results Re(k)
 
-figure(2)
+figure(3)
 plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results |lambda|
 
 %% Forced response
@@ -70,10 +70,18 @@ N=20; % Number of unit-cells in the finite structure
 U = zeros(m,N+1,nf);
 
 % Define the boundary conditions (imposed displacements or forces)
-type='U-F'; % Case where forces are applied on both edges of the waveguide
-F0 = zeros(m,1);
-FN = 1e6*ones(m,1);
+%type='F-F'; % Case where forces are applied on both edges of the waveguide
+type='U-U'; % Case where displacement are applied on both edges of the waveguide
+%type='U-F';
+%type='F-U'; 
+
+%if BC type is U : value scale of 1 ~
+%if BC type is F : value scale of 1e6 ~
+
+F0 = zeros(m,1);    U0 = -3*ones(m,1);
+FN = 1e6*ones(m,1); UN = ones(m,1);
 BC = [F0 ; FN]; % vector of size 2*m containing either U0 or F0 and UN or FN
+
 
 for i=1:nf
 
@@ -119,9 +127,9 @@ for i=1:nf
 
 end
 
-figure(1); plot(real(U(2,:,end)),'k-')
+figure(4); plot(real(U(2,:,end)),'k-')
 
-figure(2); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
+figure(5); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
 
 %% Create global matrices for finite periodic structure (case 'F-F')
 
@@ -145,8 +153,8 @@ for i=1:nf
     Ug(:,i)=Dg\Fg;
 end
 
-figure(1); hold on; plot(real(Ug(2:nui:end,end)),'r--')
+figure(6); hold on; semilogy(real(Ug(2:nui:end,end)),'r--')
 
-figure(2); hold on; semilogy(freqrange,squeeze(abs(Ug(end,:))),'r--')
+figure(7); hold on; plot(log(freqrange),log(squeeze(abs(Ug(end,:)))),'r--')
 
 
