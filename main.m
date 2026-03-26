@@ -6,7 +6,7 @@ load UC_model2D_2x2.mat
 
 %load UC_model2D_10x10.mat
 
-freqrange = linspace(5,50000,300); % Given frequency range for these two models
+freqrange = linspace(1,50000,300); % Given frequency range for these two models
 
 
 %% Parametrization of the unit-cell
@@ -17,7 +17,6 @@ lx=0.1; % Unit-cell length
 ly=0.1; % Unit-cell height
 r=0.035; % Inclusion's radius
 geom=struct('lx',lx,'ly',ly,'r',r);
-geom
 
 % Material parameters
 E=210e9; % Young modulus
@@ -27,7 +26,7 @@ rho=7800; % Material density
 t=0.1; % Plate width
 mater=struct('E',E,'nu',nu,'rho',rho,'eta',eta,'t',t);
 
-plotopt=1; % Option to visualize unit-cell
+plotopt=0; % Option to visualize unit-cell
 
 model = generate_model(geom,mater,plotopt);
 
@@ -40,14 +39,14 @@ freqrange = linspace(1,10000,200);
 [PHI,omeg]=eigs(model.K,model.M,20,'sm');
 f=sqrt(diag(omeg))/2/pi; phi=PHI(:,8);
 
-visualize_mode(model.mesh,phi,'animate', true)
+%visualize_mode(model.mesh,phi,'animate', true)
 
 
 %% Extract simplified variables and compute waves
 
-K=model.K;
+K=model.K; 
 M=model.M;
-uL=model.dofs.uL;
+uL=model.dofs.uL; 
 ui=model.dofs.ui;
 uR=model.dofs.uR;
 d=model.geom.lx;
@@ -57,10 +56,11 @@ nf=length(freqrange);
 % Computing waves from dispersion relation
 wavebasis = WFEM(K,M,freqrange,uL,uR,ui,d);
 
+figure(2)
 plot(freqrange,wavebasis.k_pos,'k.') % ploting the results Re(k)
 
-%figure
-plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results Re(k)
+figure(3)
+plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results |lambda|
 
 %% Forced response
 m=length(uL);
@@ -69,10 +69,18 @@ N=20; % Number of unit-cells in the finite structure
 U = zeros(m,N+1,nf);
 
 % Define the boundary conditions (imposed displacements or forces)
-type='F-F'; % Case where forces are applied on both edges of the waveguide
-F0 = zeros(m,1);
-FN = 1e6*ones(m,1);
+%type='F-F'; % Case where forces are applied on both edges of the waveguide
+type='U-U'; % Case where displacement are applied on both edges of the waveguide
+%type='U-F';
+%type='F-U'; 
+
+%if BC type is U : value scale of 1 ~
+%if BC type is F : value scale of 1e6 ~
+
+F0 = zeros(m,1);    U0 = -3*ones(m,1);
+FN = 1e6*ones(m,1); UN = ones(m,1);
 BC = [F0 ; FN]; % vector of size 2*m containing either U0 or F0 and UN or FN
+
 
 for i=1:nf
 
@@ -81,8 +89,7 @@ for i=1:nf
     D = K - om^2*M;
 
     % Dynamic condensation (see details in WFEM_MODA function)
-    %[DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn(D, uL, ui, uR);
-    [DLL, DLR, DRL, DRR,vL, vR] = condensation_dyn_2(D, uL, ui, uR);
+    [DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn_2(D, uL, ui, uR);
 
     % Defining wave matrices for each frequency
     phi_p = wavebasis.phipos(:,:,i);
@@ -92,15 +99,15 @@ for i=1:nf
     lb = sparse(diag(wavebasis.lbpos(:,i)));
 
     % Compute the wave amplitudes for the selected boundary conditions
-    [qp, qn] = wave_Amplitudes(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type);
+    [qp, qn] = wave_amplitudes_2(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type);
 % Function [qp, qn]=wave_Amplitudes(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type)
-% Determines, for each 'type' of boundary conditions, ex. type='U-U' or 'U-F', 'F-U', 'F-F',
+% Determines, for each 'type' of boundary conditions, ex. type='U-U' or 'U-F', 'F-U', 'F-F', 
 % the wave amplitudes q+, q-, solutions of the problem H*[q+ ; q-] = BC,
 % where BC is the imposed boundary conditions vector. BC can be of the form
 % [U0 ; UN], [U0 ; FN],  [F0 ; UN] or [F0 ; FN], depending on what is imposed.
 % H is a matrix of size 2*m x 2*m, and BC is a vector of size 2*m.
 % It returns the two wave amplitudes qp and qn, each of size m.
-
+% Checking for potential errors/issues
 
     % Retrieve the physical displacements from the wave amplitudes
     u_vector = retrieve_U_2(N, lb, phi_p, phi_n, qp, qn);
@@ -110,7 +117,7 @@ for i=1:nf
 % to return the physical displacements using the Bloch wave decomposition
 % method. One has to be careful of the positions n=0 and n=N, since the
 % matrix powers operations may result in M^0 matrices.
-% The resulting u_vector is in fact a matrix: u(DOF_index, n_index), where
+% The resulting u_vector is in fact a matrix: u(DOF_index, n_index), where 
 % DOF_index is the DOF number on the UC edge (uL), while n_index is the
 % unit-cell position from 0 (i.e., left of the 1st UC) to N (right of the
 % last UC).
@@ -119,9 +126,9 @@ for i=1:nf
 
 end
 
-figure(1); plot(real(U(2,:,end)),'k-')
+figure(4); plot(real(U(2,:,end)),'k-')
 
-figure(2); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
+figure(5); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
 
 %% Create global matrices for finite periodic structure (case 'F-F')
 
@@ -145,8 +152,8 @@ for i=1:nf
     Ug(:,i)=Dg\Fg;
 end
 
-figure(1); hold on; plot(real(Ug(2:nui:end,end)),'r--')
+figure(6); hold on; semilogy(real(Ug(2:nui:end,end)),'r--')
 
-figure(2); hold on; semilogy(freqrange,squeeze(abs(Ug(end,:))),'r--')
+figure(7); hold on; plot(log(freqrange),log(squeeze(abs(Ug(end,:)))),'r--')
 
 

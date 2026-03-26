@@ -8,12 +8,11 @@ function sol = WFEM(K,M,freqrange,uL,uR,ui,dx)
 % the dispersion curves)
 
 for i=1:length(freqrange)  % frfr=nbfreq
-    % On commence à 2 car si trop proche de 0, une erreur survient
     om=sparse(2*pi*freqrange(i));
     D=K - om^2*M;
 
     %% Dynamic condensation
-    [DLL, DLR, DRL, DRR] = condensation_dyn(D, uL, ui, uR);
+    [DLL, DLR, DRL, DRR] = condensation_dyn_2(D, uL, ui, uR);
     % Use as : [DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn(D, uL, ui, uR)
     % D is the original dynamic stiffness matrix, uL, ui, uR the left, inner
     % and right DOFs.
@@ -33,7 +32,7 @@ for i=1:length(freqrange)  % frfr=nbfreq
 
 
     %% Sorting and normalizing the wave basis
-    [lbpos, lbneg, phipos, phineg] = wavesorting(Lambdas,PHI);
+    [lbpos, lbneg, phipos, phineg] = wavesorting_2(Lambdas,PHI);
     % function 'wavesorting' collects the PHI and Lambdas variables as defined
     % produced by solve_palindrome, and does three operations:
     % First, it separates the positive-going and negative-going propagation

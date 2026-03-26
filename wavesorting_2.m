@@ -14,25 +14,25 @@ lbneg = zeros(n,1);
 phipos = zeros(n,n);
 phineg = zeros(n,n);
 
+% Tri de 0 à Inf pour récupérer les lambdas des ondes progressives
 abs_Lambdas = abs(Lambdas);
-tol = 1e-6; % Tolérance pour la recherche de 1/lambda dans abs_Lambdas à partir de lambda
+[abs_Lambdas,I]=sort(abs_Lambdas);
 
+lbpos = Lambdas(I(1:n));
+phipos = PHI(:,I(1:n));
+phineg = PHI(:,I(n+1:2*n));
+
+% Tri dans le bon sens de lbpos
+[lbpos,I]=sort(lbpos,'descend');
+phipos = phipos(:,I);
+phineg = phineg(:,I);
+
+% Comme seulement les lambdas des ondes progressives vont etre utilisés
+% on peut reconstruire lbneg à partir de lbpos
+lbneg = 1./lbpos;
+
+% Normalisation des phi
 for i=1:n
-  [~,wheremin] = min(abs_Lambdas);
-  Lambdasmin = Lambdas(wheremin);
-  lbpos(i,1) = Lambdasmin;
-  phipos(:,i) = PHI(:,wheremin);
-
-  wheremax = find(abs(Lambdas - 1/Lambdasmin) < tol);
-  % Test pour savoir si wheremax contient plusieurs indices associés à
-  % 1/Lambdasmin pour compléter la paire (Lambdasmin,1/Lambdasmin)
-  if (length(wheremax) > 1)
-    [~,wheremax] = min(abs(Lambdasmin - 1/Lambdas(wheremax)));
-  end
-  % ATTENTION : wheremax peut être vide avec 'find'
-  % Si c'est le cas, réduire tol pour accepter plus de valeurs
-  lbneg(n-i+1,1) = Lambdas(wheremax);
-  phineg(:,n-i+1) = PHI(:,wheremax);
-
-  abs_Lambdas(wheremin) = Inf; % Changement dans abs_Lambdas pour pouvoir rechercher denouveau le minimum
+    phipos(:,i) = phipos(:,i)/norm(phipos(:,i));
+    phineg(:,i) = phineg(:,i)/norm(phineg(:,i));
 end
