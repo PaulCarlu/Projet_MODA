@@ -16,7 +16,7 @@ phineg = zeros(n,n);
 
 % Tri de 0 à Inf pour récupérer les lambdas des ondes progressives
 abs_Lambdas = abs(Lambdas);
-[abs_Lambdas,I]=sort(abs_Lambdas);
+[~,I]=sort(abs_Lambdas);
 
 lbpos = Lambdas(I(1:n));
 phipos = PHI(:,I(1:n));
@@ -33,6 +33,6 @@ lbneg = 1./lbpos;
 
 % Normalisation des phi
 for i=1:n
-    phipos(:,i) = phipos(:,i)/norm(phipos(:,i));
-    phineg(:,i) = phineg(:,i)/norm(phineg(:,i));
+    phipos(:,i) = phipos(:,i)/norm(phipos(:,i),'inf');
+    phineg(:,i) = phineg(:,i)/norm(phineg(:,i),'inf');
 end

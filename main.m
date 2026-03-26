@@ -1,6 +1,6 @@
 
 %% Loading a pre-existing unit-cell model :
-clear; clc; close all
+clear; clc;
 
 load UC_model2D_2x2.mat
 
@@ -56,10 +56,10 @@ nf=length(freqrange);
 % Computing waves from dispersion relation
 wavebasis = WFEM(K,M,freqrange,uL,uR,ui,d);
 
-figure(2)
+figure(1)
 plot(freqrange,wavebasis.k_pos,'k.') % ploting the results Re(k)
 
-figure(3)
+figure(2)
 plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results |lambda|
 
 %% Forced response
@@ -69,8 +69,8 @@ N=20; % Number of unit-cells in the finite structure
 U = zeros(m,N+1,nf);
 
 % Define the boundary conditions (imposed displacements or forces)
-%type='F-F'; % Case where forces are applied on both edges of the waveguide
-type='U-U'; % Case where displacement are applied on both edges of the waveguide
+type='F-F'; % Case where forces are applied on both edges of the waveguide
+%type='U-U'; % Case where displacement are applied on both edges of the waveguide
 %type='U-F';
 %type='F-U'; 
 
@@ -110,7 +110,7 @@ for i=1:nf
 % Checking for potential errors/issues
 
     % Retrieve the physical displacements from the wave amplitudes
-    u_vector = retrieve_U(N, lb, phi_p, phi_n, qp, qn);
+    u_vector = retrieve_U_2(N, lb, phi_p, phi_n, qp, qn);
 % The function u_vector = retrieve_U(N, lb, phi_p, phi_n, qp, qn)
 % takes as inputs the number of unit-cells (N), the propagation constants
 % (lb) and wave vectors (phi) and the wave amplitudes computed previously,
@@ -126,9 +126,9 @@ for i=1:nf
 
 end
 
-figure(4); plot(real(U(2,:,end)),'k-')
+figure(1); plot(real(U(2,:,end)),'k-')
 
-figure(5); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
+figure(2); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
 
 %% Create global matrices for finite periodic structure (case 'F-F')
 
@@ -152,8 +152,9 @@ for i=1:nf
     Ug(:,i)=Dg\Fg;
 end
 
-figure(6); hold on; semilogy(real(Ug(2:nui:end,end)),'r--')
+figure(1); hold on; semilogy(real(Ug(2:nui:end,end)),'r--')
 
-figure(7); hold on; plot(log(freqrange),log(squeeze(abs(Ug(end,:)))),'r--')
+figure(2); hold on; plot(freqrange,squeeze(abs(Ug(end,:))),'r--');
+
 
 
