@@ -132,7 +132,7 @@ figure(5); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
 
 %% Create global matrices for finite periodic structure (case 'F-F')
 
-[Kg, Mg] = assemble_structure(model,N);
+[Kg, Mg] = assemble_structure_2(model,N);
 % Use: [Kg, Mg] = assemble_structure(UC,N)
 % This function takes a unit-cell model as defined above, and returns, for
 % a given integer N, the global Stiffness and Mass matrices resulting from
