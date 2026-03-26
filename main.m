@@ -1,6 +1,6 @@
 
 %% Loading a pre-existing unit-cell model :
-clear; clc
+clear; clc; close all
 
 load UC_model2D_2x2.mat
 
@@ -27,7 +27,7 @@ rho=7800; % Material density
 t=0.1; % Plate width
 mater=struct('E',E,'nu',nu,'rho',rho,'eta',eta,'t',t);
 
-plotopt=1; % Option to visualize unit-cell
+plotopt=0; % Option to visualize unit-cell
 
 model = generate_model(geom,mater,plotopt);
 
@@ -40,7 +40,7 @@ freqrange = linspace(1,10000,200);
 [PHI,omeg]=eigs(model.K,model.M,20,'sm');
 f=sqrt(diag(omeg))/2/pi; phi=PHI(:,8);
 
-visualize_mode(model.mesh,phi,'animate', true)
+%visualize_mode(model.mesh,phi,'animate', true)
 
 
 %% Extract simplified variables and compute waves
@@ -57,22 +57,31 @@ nf=length(freqrange);
 % Computing waves from dispersion relation
 wavebasis = WFEM(K,M,freqrange,uL,uR,ui,d);
 
+figure(2)
 plot(freqrange,wavebasis.k_pos,'k.') % ploting the results Re(k)
 
-%figure
-plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results Re(k)
+figure(3)
+plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results |lambda|
 
 %% Forced response
-m=length(uL)
+m=length(uL);
 
 N=20; % Number of unit-cells in the finite structure
 U = zeros(m,N+1,nf);
 
 % Define the boundary conditions (imposed displacements or forces)
-type='F-F'; % Case where forces are applied on both edges of the waveguide
-F0 = zeros(m,1);
-FN = 1e6*ones(m,1);
+%type='F-F'; % Case where forces are applied on both edges of the waveguide
+type='U-U'; % Case where displacement are applied on both edges of the waveguide
+%type='U-F';
+%type='F-U'; 
+
+%if BC type is U : value scale of 1 ~
+%if BC type is F : value scale of 1e6 ~
+
+F0 = zeros(m,1);    U0 = -3*ones(m,1);
+FN = 1e6*ones(m,1); UN = ones(m,1);
 BC = [F0 ; FN]; % vector of size 2*m containing either U0 or F0 and UN or FN
+
 
 for i=1:nf
 
@@ -81,8 +90,7 @@ for i=1:nf
     D = K - om^2*M;
 
     % Dynamic condensation (see details in WFEM_MODA function)
-    %[DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn(D, uL, ui, uR);
-    [DLL, DLR, DRL, DRR,vL, vR] = condensation_dyn_2(D, uL, ui, uR);
+    [DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn_2(D, uL, ui, uR);
 
     % Defining wave matrices for each frequency
     phi_p = wavebasis.phipos(:,:,i);
@@ -92,7 +100,7 @@ for i=1:nf
     lb = sparse(diag(wavebasis.lbpos(:,i)));
 
     % Compute the wave amplitudes for the selected boundary conditions
-    [qp, qn] = wave_Amplitudes(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type);
+    [qp, qn] = wave_amplitudes_2(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type);
 % Function [qp, qn]=wave_Amplitudes(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type)
 % Determines, for each 'type' of boundary conditions, ex. type='U-U' or 'U-F', 'F-U', 'F-F',
 % the wave amplitudes q+, q-, solutions of the problem H*[q+ ; q-] = BC,
@@ -100,7 +108,7 @@ for i=1:nf
 % [U0 ; UN], [U0 ; FN],  [F0 ; UN] or [F0 ; FN], depending on what is imposed.
 % H is a matrix of size 2*m x 2*m, and BC is a vector of size 2*m.
 % It returns the two wave amplitudes qp and qn, each of size m.
-
+% Checking for potential errors/issues
 
     % Retrieve the physical displacements from the wave amplitudes
     u_vector = retrieve_U(N, lb, phi_p, phi_n, qp, qn);
@@ -119,9 +127,9 @@ for i=1:nf
 
 end
 
-figure(1); plot(real(U(2,:,end)),'k-')
+figure(4); plot(real(U(2,:,end)),'k-')
 
-figure(2); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
+figure(5); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
 
 %% Create global matrices for finite periodic structure (case 'F-F')
 
@@ -145,8 +153,8 @@ for i=1:nf
     Ug(:,i)=Dg\Fg;
 end
 
-figure(1); hold on; plot(real(Ug(2:nui:end,end)),'r--')
+figure(6); hold on; semilogy(real(Ug(2:nui:end,end)),'r--')
 
-figure(2); hold on; semilogy(freqrange,squeeze(abs(Ug(end,:))),'r--')
+figure(7); hold on; plot(log(freqrange),log(squeeze(abs(Ug(end,:)))),'r--')
 
 
