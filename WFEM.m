@@ -23,7 +23,7 @@ for i=1:length(freqrange)  % frfr=nbfreq
 
 
     %% Dispersion relation resolution
-    [PHI,Lambdas] = solve_palindrome_2(DRL,DLL+DRR,DLR);
+    [PHI,Lambdas] = solve_palindrome(DRL,DLL+DRR,DLR);
     % 'solve_palindrome' solves the quadratic eigenvalue problem (EVP):
     % [A0*1/lambda + A1 + A2*lambda] PHI = 0
     % It takes square matrices A of dimension n, and uses a linearization
