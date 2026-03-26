@@ -11,9 +11,12 @@ function [PHI,Lambdas] = solve_palindrome_2(A0,A1,A2)
 matnulle = zeros(n,n);
 matiden = eye(n,n);
 
+% Ordre de grandeur de D
+ordreGrandeur = norm(A1)/length(A1);
+
 % Résolution
-N = [-A0,matnulle;matnulle,matiden];
-L = [A1,A2;matiden,matnulle];
+N = [-A0,matnulle;matnulle,ordreGrandeur*matiden];
+L = [A1,A2;ordreGrandeur*matiden,matnulle];
 [PSI,LAMBDA] = eig(L,N);
 
 % Attribution
