@@ -1,6 +1,6 @@
 
 %% Loading a pre-existing unit-cell model :
-clear; clc
+clear; clc; close all
 
 load UC_model2D_2x2.mat
 
@@ -63,7 +63,7 @@ plot(freqrange,wavebasis.k_pos,'k.') % ploting the results Re(k)
 plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results Re(k)
 
 %% Forced response
-m=length(uL)
+m=length(uL);
 
 N=20; % Number of unit-cells in the finite structure
 U = zeros(m,N+1,nf);
@@ -103,7 +103,7 @@ for i=1:nf
 
 
     % Retrieve the physical displacements from the wave amplitudes
-    u_vector = retrieve_U(N, lb, phi_p, phi_n, qp, qn);
+    u_vector = retrieve_U_2(N, lb, phi_p, phi_n, qp, qn);
 % The function u_vector = retrieve_U(N, lb, phi_p, phi_n, qp, qn)
 % takes as inputs the number of unit-cells (N), the propagation constants
 % (lb) and wave vectors (phi) and the wave amplitudes computed previously,
