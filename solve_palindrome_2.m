@@ -12,7 +12,7 @@ matnulle = zeros(n,n);
 matiden = eye(n,n);
 
 % Ordre de grandeur de D
-ordreGrandeur = norm(A1)/length(A1);
+ordreGrandeur = norm(A2,'inf')/length(A2);
 
 % Résolution
 N = [-A0,matnulle;matnulle,ordreGrandeur*matiden];

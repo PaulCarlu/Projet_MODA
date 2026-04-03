@@ -1,6 +1,6 @@
 
 %% Loading a pre-existing unit-cell model :
-clear; clc; close all
+clear; clc;
 
 load UC_model2D_2x2.mat
 
@@ -132,7 +132,7 @@ figure(2); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
 
 %% Create global matrices for finite periodic structure (case 'F-F')
 
-[Kg, Mg] = assemble_structure(model,N);
+[Kg, Mg] = assemble_structure_2(model,N);
 % Use: [Kg, Mg] = assemble_structure(UC,N)
 % This function takes a unit-cell model as defined above, and returns, for
 % a given integer N, the global Stiffness and Mass matrices resulting from
@@ -153,7 +153,7 @@ for i=1:nf
 end
 
 figure(1); hold on; semilogy(real(Ug(2:nui:end,end)),'r--')
+figure(2); hold on; plot(freqrange,squeeze(abs(Ug(end,:))),'r--');
 
-figure(2); hold on; plot(freqrange,squeeze(abs(Ug(end,:))),'r--')
 
 

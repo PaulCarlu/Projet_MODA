@@ -12,7 +12,7 @@ for i=1:length(freqrange)  % frfr=nbfreq
     D=K - om^2*M;
 
     %% Dynamic condensation
-    [DLL, DLR, DRL, DRR] = condensation_dyn(D, uL, ui, uR);
+    [DLL, DLR, DRL, DRR] = condensation_dyn_2(D, uL, ui, uR);
     % Use as : [DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn(D, uL, ui, uR)
     % D is the original dynamic stiffness matrix, uL, ui, uR the left, inner
     % and right DOFs.
@@ -22,7 +22,7 @@ for i=1:length(freqrange)  % frfr=nbfreq
 
 
     %% Dispersion relation resolution
-    [PHI,Lambdas] = solve_palindrome(DRL,DLL+DRR,DLR);
+    [PHI,Lambdas] = solve_palindrome_2(DRL,DLL+DRR,DLR);
     % 'solve_palindrome' solves the quadratic eigenvalue problem (EVP):
     % [A0*1/lambda + A1 + A2*lambda] PHI = 0
     % It takes square matrices A of dimension n, and uses a linearization
