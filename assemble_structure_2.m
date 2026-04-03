@@ -26,7 +26,7 @@ for i=0:N-1
     I = (nuL+nui)*i+1;
     I_p1 = I+dim_cell-1;
     ind = I:I_p1;
-    length(ind)
+    length(ind);
     Kg(ind,ind) = Kg(ind,ind) + K;
     Mg(ind,ind) = Mg(ind,ind) + M;
 end

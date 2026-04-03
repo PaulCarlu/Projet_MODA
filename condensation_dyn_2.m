@@ -26,11 +26,11 @@ DRi=D(uR,ui);
 DRR=D(uR,uR);
 
 % Sous matrices élémentaires de D condensée
-InvDii = inv(Dii);
-DLL = DLL-DLi*InvDii*DiL;
-DRR = DRR-DRi*InvDii*DiR;
-DLR = -DLi*InvDii*DiR;
-DRL = -DRi*InvDii*DiL;
+
+DLL = DLL-DLi*(Dii\DiL);
+DRR = DRR-DRi*(Dii\DiR);
+DLR = -DLi*(Dii\DiR);
+DRL = -DRi*(Dii\DiL);
 
 % Nouvelles variables
 vL = 1:m;

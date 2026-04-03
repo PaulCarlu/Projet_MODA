@@ -62,6 +62,7 @@ plot(freqrange,wavebasis.k_pos,'k.') % ploting the results Re(k)
 figure(2)
 plot(freqrange,abs(wavebasis.lbpos),'k--') % ploting the results |lambda|
 
+
 %% Forced response
 m=length(uL);
 
@@ -69,17 +70,17 @@ N=20; % Number of unit-cells in the finite structure
 U = zeros(m,N+1,nf);
 
 % Define the boundary conditions (imposed displacements or forces)
-type='F-F'; % Case where forces are applied on both edges of the waveguide
+%type='F-F'; % Case where forces are applied on both edges of the waveguide
 %type='U-U'; % Case where displacement are applied on both edges of the waveguide
-%type='U-F';
+type='U-F';
 %type='F-U'; 
 
 %if BC type is U : value scale of 1 ~
 %if BC type is F : value scale of 1e6 ~
 
-F0 = zeros(m,1);    U0 = -3*ones(m,1);
+U0 = zeros(m,1);    F0 = -3*ones(m,1);
 FN = 1e6*ones(m,1); UN = ones(m,1);
-BC = [F0 ; FN]; % vector of size 2*m containing either U0 or F0 and UN or FN
+BC = [U0 ; FN]; % vector of size 2*m containing either U0 or F0 and UN or FN
 
 
 for i=1:nf
@@ -99,7 +100,7 @@ for i=1:nf
     lb = sparse(diag(wavebasis.lbpos(:,i)));
 
     % Compute the wave amplitudes for the selected boundary conditions
-    [qp, qn] = wave_amplitudes_2(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type);
+    [qp, qn] = wave_Amplitudes_2(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type);
 % Function [qp, qn]=wave_Amplitudes(DLL, DLR, DRL, DRR, N, lb, phi_p, phi_n, BC, type)
 % Determines, for each 'type' of boundary conditions, ex. type='U-U' or 'U-F', 'F-U', 'F-F', 
 % the wave amplitudes q+, q-, solutions of the problem H*[q+ ; q-] = BC,
@@ -126,6 +127,8 @@ for i=1:nf
 
 end
 
+visualize_wave(phi_n,phi_p,D,uL,ui,uR,model);
+
 figure(1); plot(real(U(2,:,end)),'k-')
 
 figure(2); semilogy(freqrange,squeeze(abs(U(end,N+1,:))),'k-')
@@ -149,10 +152,10 @@ for i=1:nf
     om=sparse(2*pi*freqrange(i));
     Dg= Kg - om^2*Mg;
     % Solve the linear harmonic system
-    Ug(:,i)=Dg\Fg;
+    Ug(:,i)=mldivide(Dg,Fg);
 end
 
-figure(1); hold on; semilogy(real(Ug(2:nui:end,end)),'r--')
+figure(1); hold on; semilogy(real(Ug(2:nui:end,end)),'r--');
 figure(2); hold on; plot(freqrange,squeeze(abs(Ug(end,:))),'r--');
 
 
