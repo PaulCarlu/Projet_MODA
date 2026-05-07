@@ -2,9 +2,10 @@
 %% Loading a pre-existing unit-cell model :
 clear; clc;
 
-load UC_model2D_2x2.mat
+%load UC_model2D_2x2.mat
 
-%load UC_model2D_10x10.mat
+
+load UC_model2D_10x10.mat
 
 freqrange = linspace(1,50000,300); % Given frequency range for these two models
 
@@ -15,7 +16,7 @@ clear; clc
 % Geometrical parameters
 lx=0.1; % Unit-cell length
 ly=0.1; % Unit-cell height
-r=0.035; % Inclusion's radius
+r=0.030; % Inclusion's radius
 geom=struct('lx',lx,'ly',ly,'r',r);
 
 % Material parameters
@@ -70,9 +71,9 @@ N=20; % Number of unit-cells in the finite structure
 U = zeros(m,N+1,nf);
 
 % Define the boundary conditions (imposed displacements or forces)
-%type='F-F'; % Case where forces are applied on both edges of the waveguide
+type='F-F'; % Case where forces are applied on both edges of the waveguide
 %type='U-U'; % Case where displacement are applied on both edges of the waveguide
-type='U-F';
+%type='U-F';
 %type='F-U'; 
 
 %if BC type is U : value scale of 1 ~
@@ -80,7 +81,7 @@ type='U-F';
 
 U0 = zeros(m,1);    F0 = -3*ones(m,1);
 FN = 1e6*ones(m,1); UN = ones(m,1);
-BC = [U0 ; FN]; % vector of size 2*m containing either U0 or F0 and UN or FN
+BC = [F0 ; FN]; % vector of size 2*m containing either U0 or F0 and UN or FN
 
 
 for i=1:nf
@@ -95,7 +96,7 @@ for i=1:nf
     % Defining wave matrices for each frequency
     phi_p = wavebasis.phipos(:,:,i);
     phi_n = wavebasis.phineg(:,:,i);
-   % lb = sparsediag(wavebasis.lbpos(:,i));Ug
+    %lb = sparsediag(wavebasis.lbpos(:,i));
 % alternatively :
     lb = sparse(diag(wavebasis.lbpos(:,i)));
 

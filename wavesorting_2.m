@@ -25,7 +25,7 @@ phineg = PHI(:,I(n+1:2*n));
 % Tri dans le bon sens de lbpos
 [lbpos,I]=sort(lbpos,'descend');
 phipos = phipos(:,I);
-phineg = phineg(:,I);
+phineg = phineg(:,flip(I));
 
 % Comme seulement les lambdas des ondes progressives vont etre utilisés
 % on peut reconstruire lbneg à partir de lbpos

@@ -1,5 +1,4 @@
 %% Dynamic condensation
-
 function [DLL, DLR, DRL, DRR,vL, vR] = condensation_dyn_2(D, uL, ui, uR)
     % Use as : [DLL, DLR, DRL, DRR, vL, vR] = condensation_dyn(D, uL, ui, uR)
     % D is the original dynamic stiffness matrix, uL, ui, uR the left, inner
@@ -27,10 +26,10 @@ DRR=D(uR,uR);
 
 % Sous matrices élémentaires de D condensée
 
-DLL = DLL-DLi*(Dii\DiL);
-DRR = DRR-DRi*(Dii\DiR);
-DLR = -DLi*(Dii\DiR);
-DRL = -DRi*(Dii\DiL);
+DLL = DLL-(DLi/Dii)*DiL;
+DRR = DRR-(DRi/Dii)*DiR;
+DLR = -(DLi/Dii)*DiR;
+DRL = -(DRi/Dii)*DiL;
 
 % Nouvelles variables
 vL = 1:m;
