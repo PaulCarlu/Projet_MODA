@@ -57,6 +57,14 @@ nf=length(freqrange);
 % Computing waves from dispersion relation
 wavebasis = WFEM(K,M,freqrange,uL,uR,ui,d);
 
+samples = 500;
+k_range=linspace(-2*pi,2*pi,samples);
+w = solve_omega_K(K,M,uL,ui,uR);
+figure(64)
+for i=3:24
+    plot(k_range(2:499),w(i,2:499));hold on
+end
+
 figure(1)
 plot(freqrange,wavebasis.k_pos,'k.') % ploting the results Re(k)
 

@@ -11,7 +11,7 @@ function [w] = solve_omega_K(K,M,uL,ui,uR)
         M_cond = lbneg*MRL+MRR+MLL+lbpos*MLR;
         K_cond = lbneg*KRL+KRR+KLL+lbpos*KLR;
         [~,omega]=eig(M_cond,K_cond);
-        w(:,i) = diag(omega); 
+        w(:,i) = sqrt(real(diag(omega))); 
     end
 end
 
