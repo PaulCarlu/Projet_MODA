@@ -7,7 +7,7 @@ function [PHI,Lambdas] = solve_palindrome_2(A0,A1,A2)
 % where Lambdas is a vector of size 2*n
 
 % Variables
-[n,m] = size(A0);
+[n,~] = size(A0);
 matnulle = zeros(n,n);
 matiden = eye(n,n);
 
